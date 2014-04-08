@@ -18,7 +18,7 @@
     <aspect name="akka.instrumentation.AskPatternTracing"/>
 
     <!-- UnboundedMailbox -->
-    <aspect name="akka.instrumentation.UnboundedMailboxInstrumentation"/>
+	  <!--<aspect name="akka.instrumentation.UnboundedMailboxInstrumentation"/>-->
   </aspects>
 
   <weaver options="-XmessageHandlerClass:kamon.weaver.logging.KamonWeaverMessageHandler">

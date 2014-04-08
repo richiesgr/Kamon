@@ -2,13 +2,14 @@ import sbt._
 import Keys._
 
 object Projects extends Build {
+
   import AspectJ._
   import Settings._
   import Site._
   import Dependencies._
 
   lazy val root = Project("root", file("."))
-    .aggregate(kamonCore, kamonSpray, kamonNewrelic, kamonPlayground, kamonDashboard, kamonTestkit, kamonPlay, kamonStatsd, site)
+    .aggregate(kamonCore, kamonSpray, kamonNewrelic, kamonPlayground, kamonDashboard, kamonTestkit, kamonPlay, kamonStatsd, kamonDatadog, site)
     .settings(basicSettings: _*)
     .settings(formatSettings: _*)
     .settings(noPublishing: _*)
@@ -21,8 +22,8 @@ object Projects extends Build {
     .settings(
       libraryDependencies ++=
         compile(akkaActor, aspectJ, aspectjWeaver, hdrHistogram) ++
-        provided(logback) ++
-        test(scalatest, akkaTestKit, sprayTestkit, akkaSlf4j, logback))
+          provided(logback) ++
+          test(scalatest, akkaTestKit, sprayTestkit, akkaSlf4j, logback))
 
 
   lazy val kamonSpray = Project("kamon-spray", file("kamon-spray"))
@@ -32,7 +33,7 @@ object Projects extends Build {
     .settings(
       libraryDependencies ++=
         compile(akkaActor, aspectJ, sprayCan, sprayClient, sprayRouting) ++
-        test(scalatest, akkaTestKit, sprayTestkit, slf4Api, slf4nop))
+          test(scalatest, akkaTestKit, sprayTestkit, slf4Api, slf4nop))
     .dependsOn(kamonCore, kamonTestkit)
 
 
@@ -43,7 +44,7 @@ object Projects extends Build {
     .settings(
       libraryDependencies ++=
         compile(aspectJ, sprayCan, sprayClient, sprayRouting, sprayJson, sprayJsonLenses, newrelic, snakeYaml) ++
-        test(scalatest, akkaTestKit, sprayTestkit, slf4Api, slf4nop))
+          test(scalatest, akkaTestKit, sprayTestkit, slf4Api, slf4nop))
     .dependsOn(kamonCore)
 
 
@@ -54,7 +55,7 @@ object Projects extends Build {
     .settings(
       libraryDependencies ++=
         compile(akkaActor, akkaSlf4j, sprayCan, sprayClient, sprayRouting, logback))
-    .dependsOn(kamonSpray, kamonNewrelic, kamonStatsd)
+    .dependsOn(kamonSpray, kamonNewrelic, kamonStatsd, kamonDatadog)
 
 
   lazy val kamonDashboard = Project("kamon-dashboard", file("kamon-dashboard"))
@@ -80,7 +81,13 @@ object Projects extends Build {
   lazy val kamonStatsd = Project("kamon-statsd", file("kamon-statsd"))
     .settings(basicSettings: _*)
     .settings(formatSettings: _*)
-    .settings(libraryDependencies ++= compile(akkaActor) ++  test(scalatest, akkaTestKit, slf4Api, slf4nop))
+    .settings(libraryDependencies ++= compile(akkaActor) ++ test(scalatest, akkaTestKit, slf4Api, slf4nop))
+    .dependsOn(kamonCore)
+
+  lazy val kamonDatadog = Project("kamon-datadog", file("kamon-datadog"))
+    .settings(basicSettings: _*)
+    .settings(formatSettings: _*)
+    .settings(libraryDependencies ++= compile(akkaActor, datadogAgent) ++ test(scalatest, akkaTestKit, slf4Api, slf4nop))
     .dependsOn(kamonCore)
 
   lazy val site = Project("site", file("site"))
@@ -91,8 +98,8 @@ object Projects extends Build {
     .settings(
       libraryDependencies ++=
         compile(akkaSlf4j, logback) ++
-        test(scalatest, akkaTestKit))
+          test(scalatest, akkaTestKit))
 
 
-  val noPublishing = Seq(publish := (), publishLocal := ())
+  val noPublishing = Seq(publish :=(), publishLocal :=())
 }

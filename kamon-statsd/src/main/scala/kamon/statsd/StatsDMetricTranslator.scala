@@ -15,7 +15,7 @@
  */
 package kamon.statsd
 
-import akka.actor.{ Props, Actor, ActorRef }
+import akka.actor.{Props, Actor, ActorRef}
 import kamon.metrics._
 import kamon.metrics.Subscriptions.TickMetricSnapshot
 import kamon.metrics.ActorMetrics.ActorMetricSnapshot
@@ -29,7 +29,7 @@ class StatsDMetricTranslator extends Actor {
   def receive = {
     case TickMetricSnapshot(from, to, metrics) ⇒
       val translatedMetrics = metrics.collect {
-        case (am @ ActorMetrics(_), snapshot: ActorMetricSnapshot) ⇒ transformActorMetric(am, snapshot)
+        case (am@ActorMetrics(_), snapshot: ActorMetricSnapshot) ⇒ transformActorMetric(am, snapshot)
       }
 
       metricSender ! StatsD.MetricBatch(translatedMetrics.flatten)
