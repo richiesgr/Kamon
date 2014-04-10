@@ -15,7 +15,7 @@
  */
 package kamon.datadog
 
-import akka.actor.{Props, Actor}
+import akka.actor.{ Props, Actor }
 import kamon.metrics._
 import kamon.metrics.Subscriptions.TickMetricSnapshot
 import kamon.metrics.ActorMetrics.ActorMetricSnapshot
@@ -29,7 +29,7 @@ class DatadogMetricTranslator extends Actor {
   def receive = {
     case TickMetricSnapshot(from, to, metrics) ⇒
       val translatedMetrics = metrics.collect {
-        case (am@ActorMetrics(_), snapshot: ActorMetricSnapshot) ⇒ transformActorMetric(am, snapshot)
+        case (am @ ActorMetrics(_), snapshot: ActorMetricSnapshot) ⇒ transformActorMetric(am, snapshot)
       }
 
       metricSender ! Datadog.MetricBatch(translatedMetrics.flatten)

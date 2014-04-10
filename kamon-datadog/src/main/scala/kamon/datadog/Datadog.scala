@@ -103,7 +103,7 @@ class SimpleMetricKeyGenerator(config: Config) extends Datadog.MetricKeyGenerato
 
     val tags = actorName match {
       case Some(n) ⇒ List[String](s"actor:$n")
-      case None ⇒ List[String]()
+      case None    ⇒ List[String]()
     }
 
     (metricIdentity.name, tags)

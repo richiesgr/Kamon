@@ -16,11 +16,11 @@
 
 package kamon.datadog
 
-import akka.actor.{Props, Actor}
+import akka.actor.{ Props, Actor }
 import akka.util.ByteString
 import kamon.Kamon
 import com.timgroup.statsd.NonBlockingStatsDClient
-import kamon.datadog.Datadog.{Timing, Gauge, Counter}
+import kamon.datadog.Datadog.{ Timing, Gauge, Counter }
 
 class DatadogMetricsSender extends Actor {
 
@@ -37,8 +37,8 @@ class DatadogMetricsSender extends Actor {
     for (metric ← metrics) {
       metric match {
         case met: Counter ⇒ datadogAgent.count(metric.key, metric.value.toInt, metric.tags: _*)
-        case met: Gauge ⇒ datadogAgent.recordGaugeValue(metric.key, metric.value, metric.tags: _*)
-        case met: Timing ⇒ datadogAgent.recordExecutionTime(metric.key, metric.value.toLong, metric.tags: _*)
+        case met: Gauge   ⇒ datadogAgent.recordGaugeValue(metric.key, metric.value, metric.tags: _*)
+        case met: Timing  ⇒ datadogAgent.recordExecutionTime(metric.key, metric.value.toLong, metric.tags: _*)
       }
     }
   }
